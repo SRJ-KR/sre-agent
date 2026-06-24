@@ -93,7 +93,7 @@ def main():
     df_test = df_test.loc[:, ~df_test.columns.str.contains('^Unnamed')]
     
     # 🎲 CONFIGURATION: How many random alerts do you want to test?
-    NUM_TEST_RUNS = 3 
+    NUM_TEST_RUNS = 1 
     
     print(f"\n🧪 Starting Batch Test: Running {NUM_TEST_RUNS} RANDOM alerts...\n")
 
@@ -123,7 +123,7 @@ def main():
             target_service=test_alert['service'], 
             target_severity=test_alert['severity']
         )
-
+        print(f"🏆 Max Retrieval Score: {retrieval_output['max_score']}")
         # B. MEMORY-FIRST CHECK
         past_episodes = query_episodic_memory(
             alert_type=test_alert['failure_type'], 
@@ -134,9 +134,24 @@ def main():
         
         if past_episodes:
             print(f"🧠 Found {len(past_episodes)} past episode(s). Injecting into context.")
+            for ep in past_episodes:
+                print(f"   - Episode ID: {ep.get('episode_id', 'N/A')}, Outcome: {ep.get('outcome', 'Unknown')}, Steps: {ep.get('steps', 'N/A')}")
+        else :
+            print("🧠 No relevant past episodes found. Agent will rely purely on RAG and reasoning")
 
         # C. Run Agent
+        print("\n🤖 Running ReACT Agent...")
         trace, outcome = agent.run(test_alert, retrieval_output, past_episodes=past_episodes)
+        print("\n" + "="*50)
+        print("📜 AGENT TRACE")
+        print("="*50)
+        for entry in trace:
+            if entry['type'] == "THOUGHT":
+                print(f"\n💭 [STEP {entry['step']} | THOUGHT]:\n   {entry['content']}")
+            elif entry['type'] == "ACTION":
+                print(f"\n🛠️  [STEP {entry['step']} | ACTION]: {entry['tool']}\n   Args: {json.dumps(entry['args'])}")
+            elif entry['type'] == "OBSERVATION":
+                print(f"\n👁️  [STEP {entry['step']} | OBSERVATION]:\n   {entry['content']}")
         print(f"🏁 Outcome: {outcome.upper()}")
 
         # D. Evaluate Metrics
