@@ -1,0 +1,19 @@
+# Funding platforms for SRE Playbooks
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# GitHub Sponsors username(s)
+# github: [scoutflo]
+
+# Other platforms (uncomment and configure as needed)
+# patreon: scoutflo
+# open_collective: scoutflo
+# ko_fi: scoutflo
+# buy_me_a_coffee: scoutflo
+
+# Custom sponsorship links
+custom: ['https://scoutflo.com']
+
+# Note: To activate GitHub Sponsors:
+# 1. Go to Settings > Sponsors
+# 2. Complete the onboarding process
+# 3. Uncomment the github line above with your username
